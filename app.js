@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 
-app.set("views", "public");
+app.use(express.static("public"));
+app.set("views", "viewFiles");
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
