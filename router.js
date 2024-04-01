@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("./controllers/userController");
 
 router.get("/", userController.home);
+router.post("/registration", userController.registration);
 
 router.get("/about", (req, res) => {
     res.send("This is an about page");
