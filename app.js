@@ -14,6 +14,4 @@ app.use("/", router);
 app.use("/registration", router);
 app.use("/about", router);
 
-app.listen(3001, () => {
-    console.log("Server is running on port 3001");
-});
+module.exports = app;
