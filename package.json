@@ -16,6 +16,8 @@
     "express": "^4.19.1",
     "mongodb": "^6.5.0",
     "nodemon": "^3.1.0",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }

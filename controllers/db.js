@@ -7,7 +7,7 @@ const appName = process.env.APP_NAME;
 const dbCollection = process.env.DB_COLLECTION;
 const dbName = process.env.DB_NAME;
 const uri = `mongodb+srv://${userName}:${password}@${dbHost}/?retryWrites=true&w=majority&appName=${appName}`;
-const logger = require("./logger");
+const logger = require("../logger");
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
