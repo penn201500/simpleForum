@@ -3,6 +3,7 @@ const validator = require('validator');
 function User(data) {
     this.data = data;
     this.errors = [];
+    this.errors = [];
 };
 
 User.prototype.cleanUp = function () {
