@@ -82,17 +82,19 @@ User.prototype.registration = function () {
   }
 };
 
-User.prototype.login = async function (callback) {
-  this.cleanUp();
-  // check if the username exists in the database
-  const attemptUser = await userCollection.findOne({
-    username: this.data.username,
+User.prototype.login = function () {
+  return new Promise(async (resolve, reject) => {
+    this.cleanUp();
+    // check if the username exists in the database
+    const attemptUser = await userCollection.findOne({
+      username: this.data.username,
+    });
+    if (attemptUser && attemptUser.password === this.data.password) {
+      resolve("Congrats, you are logged in.");
+    } else {
+      reject("Invalid username or password.");
+    }
   });
-  if (attemptUser && attemptUser.password === this.data.password) {
-    callback("Congrats, you are logged in.");
-  } else {
-    callback("Invalid username or password.");
-  }
 };
 
 module.exports = User;

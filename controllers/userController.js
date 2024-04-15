@@ -6,11 +6,14 @@ const home = (req, res) => {
 
 function login(req, res) {
   let user = new User(req.body);
-  user.login(
-    function (result) {
+  user
+    .login()
+    .then((result) => {
       res.send(result);
-    }
-  );
+    })
+    .catch((e) => {
+      res.send(e);
+    });
 }
 
 function registration(req, res) {
@@ -26,5 +29,5 @@ function registration(req, res) {
 module.exports = {
   home,
   registration,
-  login
+  login,
 };
