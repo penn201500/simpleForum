@@ -1,21 +1,30 @@
 const User = require("../models/User");
 
 const home = (req, res) => {
-  res.render('home-guest');
+  res.render("home-guest");
+};
+
+function login(req, res) {
+  let user = new User(req.body);
+  user.login(
+    function (result) {
+      res.send(result);
+    }
+  );
 }
 
-
 function registration(req, res) {
-    let user = new User(req.body);
-    user.registration();
-    if (user.errors.length) {
-      res.send(user.errors);
-    } else {
-      res.send("Congrats, there are no errors.")
-    }
+  let user = new User(req.body);
+  user.registration();
+  if (user.errors.length) {
+    res.send(user.errors);
+  } else {
+    res.send("Congrats, there are no errors.");
+  }
 }
 
 module.exports = {
-    home,
-    registration
+  home,
+  registration,
+  login
 };

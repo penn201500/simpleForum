@@ -11,6 +11,7 @@ app.set("views", "viewFiles");
 app.set("view engine", "ejs");
 
 app.use("/", router);
+app.use("/login", router);
 app.use("/registration", router);
 app.use("/about", router);
 

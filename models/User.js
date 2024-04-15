@@ -1,14 +1,15 @@
 const validator = require("validator");
 const { isConnected, getCollection } = require("../db");
+const logger = require("../logger");
 
-let userCollection
+let userCollection;
 
 (async () => {
-    try {
-        userCollection = await getCollection();
-    } catch (error) {
-        console.error("Failed to get the user collection: ", error);
-    }
+  try {
+    userCollection = await getCollection();
+  } catch (error) {
+    console.error("Failed to get the user collection: ", error);
+  }
 })();
 
 function User(data) {
@@ -78,6 +79,19 @@ User.prototype.registration = function () {
   if (!this.errors.length && isConnected) {
     // save user data to the database
     userCollection.insertOne(this.data);
+  }
+};
+
+User.prototype.login = async function (callback) {
+  this.cleanUp();
+  // check if the username exists in the database
+  const attemptUser = await userCollection.findOne({
+    username: this.data.username,
+  });
+  if (attemptUser && attemptUser.password === this.data.password) {
+    callback("Congrats, you are logged in.");
+  } else {
+    callback("Invalid username or password.");
   }
 };
 
