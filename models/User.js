@@ -1,6 +1,7 @@
 const validator = require("validator");
 const { isConnected, getCollection } = require("../db");
 const logger = require("../logger");
+const bcrypt = require("bcryptjs");
 
 let userCollection;
 
@@ -77,6 +78,9 @@ User.prototype.registration = function () {
 
   // save user data if there are no errors
   if (!this.errors.length && isConnected) {
+    // hash user password
+    const salt = bcrypt.genSaltSync(10);
+    this.data.password = bcrypt.hashSync(this.data.password, salt);
     // save user data to the database
     userCollection.insertOne(this.data);
   }
@@ -89,7 +93,7 @@ User.prototype.login = function () {
     const attemptUser = await userCollection.findOne({
       username: this.data.username,
     });
-    if (attemptUser && attemptUser.password === this.data.password) {
+    if (attemptUser && bcrypt.compareSync(this.data.password, attemptUser.password)) {
       resolve("Congrats, you are logged in.");
     } else {
       reject("Invalid username or password.");
