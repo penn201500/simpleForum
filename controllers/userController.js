@@ -2,8 +2,7 @@ const User = require("../models/User");
 
 const home = (req, res) => {
   if (req.session.user) {
-    // res.render("home-dashboard", { username: req.session.user.username });
-    res.send("Welcome back, " + req.session.user.username);
+    res.render("home-dashboard", { username: req.session.user.username });
   } else {
     res.render("home-guest");
   }
