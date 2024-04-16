@@ -1,14 +1,17 @@
 const express = require("express");
 const session = require("express-session");
+const mongoStore = require("connect-mongo");
 const app = express();
 const router = require("./router");
+const { client, dbName } = require("./db");
 
 let sessionOptions = session({
-    secret: "JavaScript is so cool", // a secret key used to sign the session ID cookie
-    resave: false, // forces the session to be saved back to the session store
-    saveUninitialized: false, // forces a session that is "uninitialized" to be saved to the store
-    cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true }, // 24 hours
-})
+  secret: "JavaScript is so cool", // a secret key used to sign the session ID cookie
+  store: mongoStore.create({ client: client, dbName: dbName }), // store the session in the database
+  resave: false, // forces the session to be saved back to the session store
+  saveUninitialized: false, // forces a session that is "uninitialized" to be saved to the store
+  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true }, // 24 hours
+});
 
 // middleware
 app.use(express.urlencoded({ extended: false }));

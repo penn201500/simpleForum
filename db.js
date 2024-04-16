@@ -70,6 +70,8 @@ async function isConnected() {
 }
 
 module.exports = {
+    client,
+    dbName,
     isConnected,
     connectToDB,
     getDB,
