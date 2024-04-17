@@ -18,7 +18,9 @@ function login(req, res) {
     .login()
     .then((result) => {
       req.session.user = { username: user.data.username }; // to make the session object unique to per user
-      res.send(result);
+      req.session.save(() => { // use fallback function to wait for the session to be saved
+        res.redirect("/");
+      });
     })
     .catch((e) => {
       res.send(e);
