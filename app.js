@@ -1,9 +1,10 @@
 const express = require("express");
 const session = require("express-session");
 const mongoStore = require("connect-mongo");
-const app = express();
 const router = require("./router");
 const { client, dbName } = require("./db");
+const flash = require("connect-flash");
+const app = express();
 
 let sessionOptions = session({
   secret: "JavaScript is so cool", // a secret key used to sign the session ID cookie
@@ -17,6 +18,7 @@ let sessionOptions = session({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(sessionOptions);
+app.use(flash());
 
 app.use(express.static("public"));
 app.set("views", "viewFiles");

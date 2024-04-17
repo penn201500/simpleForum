@@ -4,7 +4,7 @@ const home = (req, res) => {
   if (req.session.user) {
     res.render("home-dashboard", { username: req.session.user.username });
   } else {
-    res.render("home-guest");
+    res.render("home-guest", { errors: req.flash("errors") }); // access the flash object from the request object and delete it from the session
   }
 };
 
@@ -18,16 +18,21 @@ function login(req, res) {
     .login()
     .then((result) => {
       req.session.user = { username: user.data.username }; // to make the session object unique to per user
-      req.session.save(() => { // use fallback function to wait for the session to be saved
+      req.session.save(() => {
+        // use fallback function to wait for the session to be saved
         res.redirect("/");
       });
     })
     .catch((e) => {
-      res.send(e);
+      req.flash("errors", e); // add a flash object onto the request object and session
+      req.session.save(() => {
+        // use fallback function to wait for the session to be saved
+        res.redirect("/");
+      });
     });
 }
 
-function logout(req, res){
+function logout(req, res) {
   req.session.destroy(() => {
     res.redirect("/"); // use callback function to wait for the session to be destroyed
   });
@@ -47,5 +52,5 @@ module.exports = {
   home,
   registration,
   login,
-  logout
+  logout,
 };
