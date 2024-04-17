@@ -4,7 +4,10 @@ const home = (req, res) => {
   if (req.session.user) {
     res.render("home-dashboard", { username: req.session.user.username });
   } else {
-    res.render("home-guest", { errors: req.flash("errors") }); // access the flash object from the request object and delete it from the session
+    res.render("home-guest", {
+      errors: req.flash("errors"),
+      regErrors: req.flash("regErrors"),
+    }); // access the flash object from the request object and delete it from the session
   }
 };
 
@@ -42,7 +45,13 @@ function registration(req, res) {
   let user = new User(req.body);
   user.registration();
   if (user.errors.length) {
-    res.send(user.errors);
+    user.errors.forEach((error) => {
+      req.flash("errors", error);
+    });
+    req.session.save(() => {
+      // req.flash will update the session object in db, so we need to manually save the session; then redirect
+      res.redirect("/");
+    });
   } else {
     res.send("Congrats, there are no errors.");
   }
