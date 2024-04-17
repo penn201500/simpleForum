@@ -25,6 +25,12 @@ function login(req, res) {
     });
 }
 
+function logout(req, res){
+  req.session.destroy(() => {
+    res.redirect("/"); // use callback function to wait for the session to be destroyed
+  });
+}
+
 function registration(req, res) {
   let user = new User(req.body);
   user.registration();
@@ -39,4 +45,5 @@ module.exports = {
   home,
   registration,
   login,
+  logout
 };
