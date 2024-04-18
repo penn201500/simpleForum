@@ -40,6 +40,7 @@ User.prototype.cleanUp = function () {
 };
 
 User.prototype.validate = function () {
+  return new Promise(async (resolve, reject) => {
   if (this.data.username === "") {
     this.errors.push("You must provide a username.");
   }
@@ -69,12 +70,37 @@ User.prototype.validate = function () {
   if (!validator.isEmail(this.data.email)) {
     this.errors.push("You must provide a valid email address.");
   }
-};
+  if (
+    this.data.username.length > 2 &&
+    this.data.username.length < 31 &&
+    validator.isAlphanumeric(this.data.username)
+  ) {
+    // check the database if the username is already taken
+    userCollection
+      .findOne({ username: this.data.username })
+      .then((username) => {
+        if (username) {
+          this.errors.push("That username is already taken.");
+        }
+      })
+  };
+  if (validator.isEmail(this.data.email)) {
+    // check the database if the email is already taken
+    userCollection
+      .findOne({ email: this.data.email })
+      .then((email) => {
+        if (email) {
+          this.errors.push("That email is already being used.");
+        }
+      });
+  }
+});
 
 User.prototype.registration = function () {
+  return new Promise(async (resolve, reject) => {
   // validate user data
   this.cleanUp();
-  this.validate();
+  await this.validate();
 
   // save user data if there are no errors
   if (!this.errors.length && isConnected) {
@@ -82,9 +108,14 @@ User.prototype.registration = function () {
     const salt = bcrypt.genSaltSync(10);
     this.data.password = bcrypt.hashSync(this.data.password, salt);
     // save user data to the database
-    userCollection.insertOne(this.data);
+    await userCollection.insertOne(this.data);
+    resolve();
+  } else {
+    reject(this.errors);
   }
-};
+})
+}
+
 
 User.prototype.login = function () {
   return new Promise(async (resolve, reject) => {
@@ -93,12 +124,16 @@ User.prototype.login = function () {
     const attemptUser = await userCollection.findOne({
       username: this.data.username,
     });
-    if (attemptUser && bcrypt.compareSync(this.data.password, attemptUser.password)) {
+    if (
+      attemptUser &&
+      bcrypt.compareSync(this.data.password, attemptUser.password)
+    ) {
       resolve("Congrats, you are logged in.");
     } else {
       reject("Invalid username or password.");
     }
   });
 };
+}
 
 module.exports = User;
