@@ -43,18 +43,22 @@ function logout(req, res) {
 
 function registration(req, res) {
   let user = new User(req.body);
-  user.registration();
-  if (user.errors.length) {
-    user.errors.forEach((error) => {
-      req.flash("errors", error);
+  user
+    .registration()
+    .then(() => {
+      req.session.user = { username: user.data.username };
+      req.session.save(() => {
+        res.redirect("/");
+      });
+    })
+    .catch((regErrors) => {
+      regErrors.forEach((error) => {
+        req.flash("regErrors", error);
+      });
+      req.session.save(() => {
+        res.redirect("/");
+      });
     });
-    req.session.save(() => {
-      // req.flash will update the session object in db, so we need to manually save the session; then redirect
-      res.redirect("/");
-    });
-  } else {
-    res.send("Congrats, there are no errors.");
-  }
 }
 
 module.exports = {

@@ -19,7 +19,7 @@ const logger = winston.createLogger({
         winston.format.splat(),
         winston.format.json()
     ),
-    defaultMeta: {service: "Todo App"},
+    defaultMeta: {service: "simpleForum App"},
     transports: [
         transport
     ]

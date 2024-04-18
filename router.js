@@ -10,5 +10,4 @@ router.post("/logout", userController.logout);
 router.get("/about", (req, res) => {
     res.send("This is an about page");
 });
-
 module.exports = router;
