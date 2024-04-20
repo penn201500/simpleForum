@@ -140,11 +140,8 @@ User.prototype.login = function () {
 };
 
 User.prototype.getAvatar = function () {
-  // URL encode the default avatar URL
-  const defaultAvatarUrl = encodeURIComponent('https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128');
-
   // Construct the Gravatar URL with the default avatar as a fallback
-  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128&d=${defaultAvatarUrl}`;
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
 };
 
 module.exports = User;
