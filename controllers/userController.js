@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 const home = (req, res) => {
   if (req.session.user) {
-    res.render("home-dashboard", { username: req.session.user.username });
+    res.render("home-dashboard", { username: req.session.user.username , avatar: req.session.user.avatar});
   } else {
     res.render("home-guest", {
       errors: req.flash("errors"),
@@ -20,7 +20,7 @@ function login(req, res) {
   user
     .login()
     .then((result) => {
-      req.session.user = { username: user.data.username }; // to make the session object unique to per user
+      req.session.user = {avatar: user.avatar, username: user.data.username }; // to make the session object unique to per user
       req.session.save(() => {
         // use fallback function to wait for the session to be saved
         res.redirect("/");
@@ -46,7 +46,7 @@ function registration(req, res) {
   user
     .registration()
     .then(() => {
-      req.session.user = { username: user.data.username };
+      req.session.user = { avatar: user.avatar, username: user.data.username };
       req.session.save(() => {
         res.redirect("/");
       });

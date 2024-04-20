@@ -3,6 +3,7 @@ const { isConnected, getCollection } = require("../db");
 const logger = require("../logger");
 const bcrypt = require("bcryptjs");
 const { log } = require("winston");
+const md5 = require("md5");
 
 let userCollection;
 
@@ -110,6 +111,7 @@ User.prototype.registration = function () {
       this.data.password = bcrypt.hashSync(this.data.password, salt);
       // save user data to the database
       await userCollection.insertOne(this.data);
+      this.getAvatar();
       resolve();
     } else {
       reject(this.errors);
@@ -128,10 +130,21 @@ User.prototype.login = function () {
       attemptUser &&
       bcrypt.compareSync(this.data.password, attemptUser.password)
     ) {
+      this.data = attemptUser;
+      this.getAvatar();
       resolve("Congrats, you are logged in.");
     } else {
       reject("Invalid username or password.");
     }
   });
 };
+
+User.prototype.getAvatar = function () {
+  // URL encode the default avatar URL
+  const defaultAvatarUrl = encodeURIComponent('https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128');
+
+  // Construct the Gravatar URL with the default avatar as a fallback
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128&d=${defaultAvatarUrl}`;
+};
+
 module.exports = User;
