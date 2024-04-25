@@ -11,6 +11,17 @@ const home = (req, res) => {
   }
 };
 
+function mustBeLoggedIn(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    req.flash("errors", "You must be logged in to perform that action.");
+    req.session.save(() => {
+      res.redirect("/");
+    });
+  }
+}
+
 function login(req, res) {
   // http requests are stateless, we use sessions to store user data
   // session is a way to store data on the server temporarily
@@ -66,4 +77,5 @@ module.exports = {
   registration,
   login,
   logout,
+  mustBeLoggedIn
 };

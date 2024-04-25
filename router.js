@@ -10,7 +10,7 @@ router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 
 // post related routes
-router.get("/create-post", postController.createPost);
+router.get("/create-post", userController.mustBeLoggedIn, postController.createPost);
 
 router.get("/about", (req, res) => {
     res.send("This is an about page");
