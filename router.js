@@ -19,6 +19,7 @@ router.post(
   userController.mustBeLoggedIn,
   postController.createPost
 );
+router.get("/post/:id", postController.viewSingle);
 
 router.get("/about", (req, res) => {
   res.send("This is an about page");
