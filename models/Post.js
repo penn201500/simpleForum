@@ -54,6 +54,7 @@ Post.prototype.create = function () {
         })
         .catch(() => {
           this.errors.push("Please try again later.");
+          reject(this.errors);
         });
     } else {
       reject(this.errors);
