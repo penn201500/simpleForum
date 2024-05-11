@@ -8,12 +8,10 @@ exports.createPost = function (req, res) {
   let post = new Post(req.body, req.session.user._id);
   post
     .create()
-    .then(function (newId) {
-      req.flash("success", "New post successfully created.");
-      req.session.save(() => res.redirect(`/post/${newId}`));
+    .then(function () {
+      res.send("New post created.");
     })
     .catch(function (errors) {
-      post.errors.forEach((error) => req.flash("errors", error));
-      req.session.save(() => res.redirect("/create-post"));
+      res.send(errors);
     });
 };
