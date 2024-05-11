@@ -2,7 +2,10 @@ const User = require("../models/User");
 
 const home = (req, res) => {
   if (req.session.user) {
-    res.render("home-dashboard", { username: req.session.user.username , avatar: req.session.user.avatar});
+    res.render("home-dashboard", {
+      username: req.session.user.username,
+      avatar: req.session.user.avatar,
+    });
   } else {
     res.render("home-guest", {
       errors: req.flash("errors"),
@@ -31,7 +34,11 @@ function login(req, res) {
   user
     .login()
     .then((result) => {
-      req.session.user = {avatar: user.avatar, username: user.data.username }; // to make the session object unique to per user
+      req.session.user = {
+        avatar: user.avatar,
+        username: user.data.username,
+        _id: user.data._id,
+      }; // to make the session object unique to per user
       req.session.save(() => {
         // use fallback function to wait for the session to be saved
         res.redirect("/");
@@ -57,7 +64,11 @@ function registration(req, res) {
   user
     .registration()
     .then(() => {
-      req.session.user = { avatar: user.avatar, username: user.data.username };
+      req.session.user = {
+        avatar: user.avatar,
+        username: user.data.username,
+        _id: user.data._id,
+      };
       req.session.save(() => {
         res.redirect("/");
       });
@@ -77,5 +88,5 @@ module.exports = {
   registration,
   login,
   logout,
-  mustBeLoggedIn
+  mustBeLoggedIn,
 };
