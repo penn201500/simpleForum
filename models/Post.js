@@ -1,5 +1,7 @@
 const e = require("connect-flash");
 const { isConnected, getCollection, ObjectId } = require("../db");
+const { post } = require("../router");
+const User = require("./User");
 
 let postCollection;
 
@@ -70,9 +72,37 @@ Post.findSingleById = function (id) {
       reject();
       return;
     }
-    let posts = await postCollection.findOne({ _id: new ObjectId(id) });
-    if (posts) {
-      resolve(posts);
+    let posts = await postCollection
+      .aggregate([
+        { $match: { _id: new ObjectId(id) } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "author",
+            foreignField: "_id",
+            as: "authorDocument",
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            body: 1,
+            createdDate: 1,
+            author: { $arrayElemAt: ["$authorDocument", 0] },
+          },
+        },
+      ])
+      .toArray();
+    // clean up author property in each post object
+    posts = posts.map(function (post) {
+      post.author = {
+        username: post.author.username,
+        avatar: new User(post.author, true).avatar,
+      };
+      return post;
+    });
+    if (posts.length) {
+      resolve(posts[0]); // resolve the 1st post
     } else {
       reject();
     }

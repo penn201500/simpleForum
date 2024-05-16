@@ -15,10 +15,15 @@ let userCollection;
   }
 })();
 
-function User(data) {
+function User(data, getAvatar) {
   this.data = data;
   this.errors = [];
-  this.errors = [];
+  if (getAvatar == undefined) {
+    getAvatar = false;
+  }
+  if (getAvatar) {
+    this.getAvatar();
+  }
 }
 
 User.prototype.cleanUp = function () {
