@@ -83,10 +83,30 @@ function registration(req, res) {
     });
 }
 
+function ifUserExists(req, res, next) {
+  User.findByUsername(req.params.username, { projection: { username: 1, _id: 1 } })
+    .then((userDocument) => {
+      req.profileUser = userDocument;
+      next();
+    })
+    .catch(() => {
+      res.render("404");
+    });
+}
+
+function profilePostsScreen(req, res) {
+  res.render("profile", {
+    profileUsername: req.profileUser.username,
+    profileAvatar: req.profileUser.avatar,
+  });
+}
+
 module.exports = {
   home,
   registration,
   login,
   logout,
   mustBeLoggedIn,
+  ifUserExists,
+  profilePostsScreen,
 };
