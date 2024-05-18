@@ -20,6 +20,11 @@ app.use(express.json());
 app.use(sessionOptions);
 app.use(flash());
 app.use((req, res, next) => {
+  if (req.session.user) {
+    req.visitorId = req.session.user._id;
+  } else {
+    req.visitorId = 0;
+  }
   res.locals.user = req.session.user;
   next();
 });

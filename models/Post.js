@@ -65,7 +65,7 @@ Post.prototype.create = function () {
   });
 };
 
-Post.reusableQuery = function (uniqueOperations) {
+Post.reusableQuery = function (uniqueOperations, visitorId) {
   return new Promise(async (resolve, reject) => {
     let aggOperations = uniqueOperations.concat([
       {
@@ -89,6 +89,7 @@ Post.reusableQuery = function (uniqueOperations) {
     let posts = await postCollection.aggregate(aggOperations).toArray();
     // clean up author property in each post object
     posts = posts.map(function (post) {
+      post.isVisitorOwner = post.author._id.equals(visitorId);
       post.author = {
         username: post.author.username,
         avatar: new User(post.author, true).avatar,
@@ -99,16 +100,17 @@ Post.reusableQuery = function (uniqueOperations) {
   });
 };
 
-Post.findSingleById = function (id) {
+Post.findSingleById = function (id, visitorId) {
   return new Promise(async (resolve, reject) => {
     if (typeof id !== "string" || !ObjectId.isValid(id)) {
       reject();
       return;
     }
 
-    let posts = await Post.reusableQuery([
-      { $match: { _id: new ObjectId(id) } },
-    ]);
+    let posts = await Post.reusableQuery(
+      [{ $match: { _id: new ObjectId(id) } }],
+      visitorId
+    );
 
     if (posts.length) {
       resolve(posts[0]); // resolve the 1st post
