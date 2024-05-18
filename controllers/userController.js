@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Post = require("../models/Post");
 
 const home = (req, res) => {
   if (req.session.user) {
@@ -84,7 +85,9 @@ function registration(req, res) {
 }
 
 function ifUserExists(req, res, next) {
-  User.findByUsername(req.params.username, { projection: { username: 1, _id: 1 } })
+  User.findByUsername(req.params.username, {
+    projection: { username: 1, _id: 1 },
+  })
     .then((userDocument) => {
       req.profileUser = userDocument;
       next();
@@ -95,10 +98,17 @@ function ifUserExists(req, res, next) {
 }
 
 function profilePostsScreen(req, res) {
-  res.render("profile", {
-    profileUsername: req.profileUser.username,
-    profileAvatar: req.profileUser.avatar,
-  });
+  Post.findByAuthorId(req.profileUser._id)
+    .then((posts) => {
+      res.render("profile", {
+        posts: posts,
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar,
+      });
+    })
+    .catch(() => {
+      res.render("404");
+    });
 }
 
 module.exports = {
