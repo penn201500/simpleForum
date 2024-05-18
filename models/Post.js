@@ -1,6 +1,5 @@
 const e = require("connect-flash");
 const { isConnected, getCollection, ObjectId } = require("../db");
-const { post } = require("../router");
 const User = require("./User");
 
 let postCollection;
