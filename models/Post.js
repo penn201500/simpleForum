@@ -12,10 +12,11 @@ let postCollection;
   }
 })();
 
-let Post = function (data, userid) {
+let Post = function (data, userid, requestedPostId) {
   this.data = data;
   this.errors = [];
   this.userid = userid;
+  this.requestedPostId = requestedPostId;
 };
 
 Post.prototype.cleanUp = function () {
@@ -52,7 +53,7 @@ Post.prototype.create = function () {
       // save post into the database
       postCollection
         .insertOne(this.data)
-        .then((info) => {
+        .then(info => {
           resolve();
         })
         .catch(() => {
@@ -61,6 +62,36 @@ Post.prototype.create = function () {
         });
     } else {
       reject(this.errors);
+    }
+  });
+};
+
+Post.prototype.update = function () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let post = await Post.findSingleById(this.requestedPostId, this.userid);
+      if (post.isVisitorOwner) {
+        // actually update the db
+        let status = await this.actuallyUpdate();
+        resolve(status);
+      } else {
+        reject();
+      }
+    } catch {
+      reject();
+    }
+  });
+};
+
+Post.prototype.actuallyUpdate = function () {
+  return new Promise(async (resolve, reject) => {
+    this.cleanUp();
+    this.validate();
+    if (!this.errors.length) {
+      await postCollection.findOneAndUpdate({ _id: new ObjectId(this.requestedPostId) }, { $set: { title: this.data.title, body: this.data.body } });
+      resolve("success");
+    } else {
+      resolve("failure");
     }
   });
 };
@@ -107,10 +138,7 @@ Post.findSingleById = function (id, visitorId) {
       return;
     }
 
-    let posts = await Post.reusableQuery(
-      [{ $match: { _id: new ObjectId(id) } }],
-      visitorId
-    );
+    let posts = await Post.reusableQuery([{ $match: { _id: new ObjectId(id) } }], visitorId);
 
     if (posts.length) {
       resolve(posts[0]); // resolve the 1st post
@@ -121,10 +149,7 @@ Post.findSingleById = function (id, visitorId) {
 };
 
 Post.findByAuthorId = function (authorId) {
-  return Post.reusableQuery([
-    { $match: { author: authorId } },
-    { $sort: { createdDate: -1 } },
-  ]);
+  return Post.reusableQuery([{ $match: { author: authorId } }, { $sort: { createdDate: -1 } }]);
 };
 
 module.exports = Post;

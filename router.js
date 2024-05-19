@@ -28,6 +28,8 @@ router.post(
   postController.createPost
 );
 router.get("/post/:id", postController.viewSingle);
+router.get("/post/:id/edit", postController.viewEditScreen);
+router.post("/post/:id/edit", postController.edit);
 
 router.get("/about", (req, res) => {
   res.send("This is an about page");
