@@ -1,11 +1,7 @@
 <%- include('includes/header') %>
 
 <div class="container py-md-5 container--narrow">
-  <% errors.forEach((message)=> { %>
-  <div class="alert alert-danger small"><%= message %></div>
-  <% }) %> <% success.forEach((message)=> { %>
-  <div class="alert alert-success small"><%= message %></div>
-  <% }) %>
+  <%- include('includes/flash') %>
 
   <form
     action="/post/<%= post._id %>/edit"
