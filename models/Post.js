@@ -1,6 +1,8 @@
 const e = require("connect-flash");
 const { isConnected, getCollection, ObjectId } = require("../db");
 const User = require("./User");
+const sanatizeHTML = require("sanitize-html");
+const sanitizeHtml = require("sanitize-html");
 
 let postCollection;
 
@@ -29,8 +31,8 @@ Post.prototype.cleanUp = function () {
 
   // get rid of any bogus properties
   this.data = {
-    title: this.data.title.trim(),
-    body: this.data.body.trim(),
+    title: sanitizeHtml(this.data.title.trim(), { allowedTags: [], allowedAttributes: {} }),
+    body: sanitizeHtml(this.data.body.trim(), { allowedTags: [], allowedAttributes: {} }),
     createdDate: new Date(),
     author: new ObjectId(this.userid),
   };

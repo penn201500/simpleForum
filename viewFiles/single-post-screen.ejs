@@ -11,16 +11,18 @@
         class="text-primary mr-2"
         data-toggle="tooltip"
         data-placement="top"
-        title="Edit"
-        ><i class="fas fa-edit"></i
-      ></a>
-      <form class="delete-post-form d-inline" action="#" method="POST">
+        title="Edit">
+        <i class="fas fa-edit"></i>
+      </a>
+      <form
+        class="delete-post-form d-inline"
+        action="#"
+        method="POST">
         <button
           class="delete-post-button text-danger"
           data-toggle="tooltip"
           data-placement="top"
-          title="Delete"
-        >
+          title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </form>
@@ -29,13 +31,17 @@
   </div>
 
   <p class="text-muted small mb-4">
-    <a href="#"><img class="avatar-tiny" src="<%= post.author.avatar %>" /></a>
-    Posted by <a href="#"><%= post.author.username %></a> on <%=
-    post.createdDate.getMonth() + 1 %>/<%= post.createdDate.getDate() %>/<%=
-    post.createdDate.getFullYear() %>
+    <a href="#">
+      <img
+        class="avatar-tiny"
+        src="<%= post.author.avatar %>" />
+    </a>
+    Posted by
+    <a href="#"><%= post.author.username %></a>
+    on <%= post.createdDate.getMonth() + 1 %>/<%= post.createdDate.getDate() %>/<%= post.createdDate.getFullYear() %>
   </p>
 
-  <div class="body-content"><%= post.body %></div>
+  <div class="body-content"><%- filterUserHTML(post.body) %></div>
 </div>
 
 <%- include('includes/footer') %>

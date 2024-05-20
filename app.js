@@ -4,6 +4,7 @@ const mongoStore = require("connect-mongo");
 const router = require("./router");
 const { client, dbName } = require("./db");
 const flash = require("connect-flash");
+const markdown = require("marked");
 const app = express();
 
 let sessionOptions = session({
@@ -20,15 +21,20 @@ app.use(express.json());
 app.use(sessionOptions);
 app.use(flash());
 app.use((req, res, next) => {
+  // make our markdown function available from within ejs templates
+  res.locals.filterUserHTML = function (content) {
+    return markdown.parse(content);
+  };
+  // make all error and success flash messages available from all templates
   res.locals.errors = req.flash("errors");
   res.locals.success = req.flash("success");
-
+  // make current user id available on the req object
   if (req.session.user) {
     req.visitorId = req.session.user._id;
   } else {
     req.visitorId = 0;
   }
-
+  // make user session data available from within view templates
   res.locals.user = req.session.user;
   next();
 });
