@@ -3,6 +3,8 @@
 <div class="container py-md-5 container--narrow">
   <%- include('includes/flash') %>
 
+  <a href="/post/<%= post._id %>" class="btn btn-link btn-sm"><i class="fas fa-chevron-left"></i> Back to Post</a>
+
   <form
     action="/post/<%= post._id %>/edit"
     method="POST">
