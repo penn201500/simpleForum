@@ -6,6 +6,7 @@ const { client, dbName } = require("./db");
 const flash = require("connect-flash");
 const markdown = require("marked");
 const app = express();
+const sanitizeHtml = require("sanitize-html");
 
 let sessionOptions = session({
   secret: "JavaScript is so cool", // a secret key used to sign the session ID cookie
@@ -23,7 +24,7 @@ app.use(flash());
 app.use((req, res, next) => {
   // make our markdown function available from within ejs templates
   res.locals.filterUserHTML = function (content) {
-    return markdown.parse(content);
+    return sanitizeHtml(markdown.parse(content), { allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4' ], allowedAttributes: {} });
   };
   // make all error and success flash messages available from all templates
   res.locals.errors = req.flash("errors");
