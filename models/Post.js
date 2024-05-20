@@ -54,7 +54,7 @@ Post.prototype.create = function () {
       postCollection
         .insertOne(this.data)
         .then(info => {
-          resolve();
+          resolve(info.insertedId);
         })
         .catch(() => {
           this.errors.push("Please try again later.");
