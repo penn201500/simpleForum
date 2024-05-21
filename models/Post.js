@@ -154,4 +154,20 @@ Post.findByAuthorId = function (authorId) {
   return Post.reusableQuery([{ $match: { author: authorId } }, { $sort: { createdDate: -1 } }]);
 };
 
+Post.delete = function (id, currentUserId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let post = await Post.findSingleById(id, currentUserId);
+      if (post.isVisitorOwner) {
+        await postCollection.deleteOne({ _id: new ObjectId(id) });
+        resolve();
+      } else {
+        reject();
+      }
+    } catch (error) {
+      reject();
+    }
+  });
+};
+
 module.exports = Post;
