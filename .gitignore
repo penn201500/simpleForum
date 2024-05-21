@@ -133,4 +133,4 @@ dist
 # misc
 .idea
 .*.json
-
+.vscode
