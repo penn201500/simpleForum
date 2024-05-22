@@ -98,7 +98,7 @@ Post.prototype.actuallyUpdate = function () {
   });
 };
 
-Post.reusableQuery = function (uniqueOperations, visitorId) {
+Post.reusableQuery = function (uniqueOperations, visitorId, finalOperations=[]) {
   return new Promise(async (resolve, reject) => {
     let aggOperations = uniqueOperations.concat([
       {
@@ -117,7 +117,7 @@ Post.reusableQuery = function (uniqueOperations, visitorId) {
           author: { $arrayElemAt: ["$authorDocument", 0] },
         },
       },
-    ]);
+    ]).concat(finalOperations);
 
     let posts = await postCollection.aggregate(aggOperations).toArray();
     // clean up author property in each post object
@@ -169,5 +169,18 @@ Post.delete = function (id, currentUserId) {
     }
   });
 };
+
+Post.search = function(searchTerm) {
+  return new Promise(async (resolve, reject) => {
+    if (typeof(searchTerm) == "string") {
+      let posts = await Post.reusableQuery([
+        {$match: {$text: {$search: searchTerm}}}
+      ], undefined, [{$sort: {score: {$meta: "textScore"}}}])
+      resolve(posts)
+    } else {
+      reject()
+    }
+  })
+}
 
 module.exports = Post;

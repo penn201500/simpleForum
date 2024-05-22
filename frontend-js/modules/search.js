@@ -48,7 +48,11 @@ export default class Search {
   sendRequest() {
     axios
       .post("/search", { searchTerm: this.inputField.value })
-      .then()
+      .then(
+        response => {
+          console.log(`Here are the results: ${response.data}`);
+        }
+      )
       .catch(() => {
         alert("error");
       });
