@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default class Search {
   // Properties
   constructor() {
@@ -6,6 +8,10 @@ export default class Search {
     this.overlayToProcess = document.querySelector(".search-overlay");
     this.closeIcon = document.querySelector(".close-live-search");
     this.inputField = document.querySelector("#live-search-field");
+    this.resultArea = document.querySelector(".live-search-results");
+    this.loaderIcon = document.querySelector(".circle-loader");
+    this.typingWaitTimer = 500;
+    this.previousValue = "";
     this.eventsListener();
   }
 
@@ -18,8 +24,33 @@ export default class Search {
       e.preventDefault();
       this.openOverlay();
     });
+    this.inputField.addEventListener("keyup", () => {
+      this.keyPressHandler();
+    });
   }
   // Methods
+  keyPressHandler() {
+    let value = this.inputField.value;
+    if (value != "" && value != this.previousValue) {
+      clearTimeout(this.typingWaitTimer);
+      this.showLoaderIcon();
+      this.typingWaitTimer = setTimeout(() => this.sendRequest(), 500);
+    }
+    this.previousValue = value;
+  }
+
+  sendRequest() {
+    axios
+    .post("/search", { searchTerm: this.inputField.value })
+    .then()
+    .catch(() => {
+      alert("error");
+    });
+  }
+  showLoaderIcon() {
+    this.loaderIcon.classList.add("circle-loader--visible");
+  }
+
   openOverlay() {
     this.overlayToProcess.classList.add("search-overlay--visible");
     setTimeout(() => this.inputField.focus(), 500);
@@ -45,7 +76,7 @@ export default class Search {
     <div class="search-overlay-bottom">
       <div class="container container--narrow py-3">
         <div class="circle-loader"></div>
-        <div class="live-search-results live-search-results--visible">
+        <div class="live-search-results">
           <div class="list-group shadow-sm">
             <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
 
