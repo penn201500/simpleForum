@@ -27,6 +27,12 @@ export default class Search {
     this.inputField.addEventListener("keyup", () => {
       this.keyPressHandler();
     });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        // Check if the key pressed is 'Escape'
+        this.closeOverlay();
+      }
+    });
   }
   // Methods
   keyPressHandler() {
@@ -41,11 +47,11 @@ export default class Search {
 
   sendRequest() {
     axios
-    .post("/search", { searchTerm: this.inputField.value })
-    .then()
-    .catch(() => {
-      alert("error");
-    });
+      .post("/search", { searchTerm: this.inputField.value })
+      .then()
+      .catch(() => {
+        alert("error");
+      });
   }
   showLoaderIcon() {
     this.loaderIcon.classList.add("circle-loader--visible");
