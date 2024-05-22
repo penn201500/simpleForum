@@ -1,12 +1,15 @@
 export default class Search {
+  // Properties
   constructor() {
     this.injectHTML();
     this.headerSearchIcon = document.querySelector(".header-search-icon");
     this.overlayToProcess = document.querySelector(".search-overlay");
     this.closeIcon = document.querySelector(".close-live-search");
+    this.inputField = document.querySelector("#live-search-field");
     this.eventsListener();
   }
 
+  // Events
   eventsListener() {
     this.closeIcon.addEventListener("click", e => {
       this.closeOverlay();
@@ -16,9 +19,10 @@ export default class Search {
       this.openOverlay();
     });
   }
-
+  // Methods
   openOverlay() {
     this.overlayToProcess.classList.add("search-overlay--visible");
+    setTimeout(() => this.inputField.focus(), 500);
   }
 
   closeOverlay() {
