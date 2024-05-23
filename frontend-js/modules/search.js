@@ -1,4 +1,5 @@
 import axios from "axios";
+import DOMPurify from "dompurify";
 
 export default class Search {
   // Properties
@@ -62,7 +63,8 @@ export default class Search {
 
   renderResultsHTML(posts) {
     if (posts.length) {
-      this.resultArea.innerHTML = `<div class="list-group shadow-sm">
+      this.resultArea.innerHTML = DOMPurify.sanitize(
+        `<div class="list-group shadow-sm">
       <div class="list-group-item active"><strong>Search Results</strong> (${posts.length > 1 ? `${posts.length} items found` : `1 item found`})</div>
       ${posts
         .map(post => {
@@ -73,8 +75,8 @@ export default class Search {
       </a>`;
         })
         .join("")}
-
-    </div>`;
+    </div>`
+      );
     } else {
       this.resultArea.innerHTML = `<p class="alert alert-danger text-center shadow-sm">Sorry, no results were found</p>`;
     }
