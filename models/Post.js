@@ -1,7 +1,6 @@
 const e = require("connect-flash");
 const { isConnected, getCollection, ObjectId } = require("../db");
 const User = require("./User");
-const sanatizeHTML = require("sanitize-html");
 const sanitizeHtml = require("sanitize-html");
 
 let postCollection;
@@ -98,26 +97,28 @@ Post.prototype.actuallyUpdate = function () {
   });
 };
 
-Post.reusableQuery = function (uniqueOperations, visitorId, finalOperations=[]) {
+Post.reusableQuery = function (uniqueOperations, visitorId, finalOperations = []) {
   return new Promise(async (resolve, reject) => {
-    let aggOperations = uniqueOperations.concat([
-      {
-        $lookup: {
-          from: "users",
-          localField: "author",
-          foreignField: "_id",
-          as: "authorDocument",
+    let aggOperations = uniqueOperations
+      .concat([
+        {
+          $lookup: {
+            from: "users",
+            localField: "author",
+            foreignField: "_id",
+            as: "authorDocument",
+          },
         },
-      },
-      {
-        $project: {
-          title: 1,
-          body: 1,
-          createdDate: 1,
-          author: { $arrayElemAt: ["$authorDocument", 0] },
+        {
+          $project: {
+            title: 1,
+            body: 1,
+            createdDate: 1,
+            author: { $arrayElemAt: ["$authorDocument", 0] },
+          },
         },
-      },
-    ]).concat(finalOperations);
+      ])
+      .concat(finalOperations);
 
     let posts = await postCollection.aggregate(aggOperations).toArray();
     // clean up author property in each post object
@@ -170,17 +171,15 @@ Post.delete = function (id, currentUserId) {
   });
 };
 
-Post.search = function(searchTerm) {
+Post.search = function (searchTerm) {
   return new Promise(async (resolve, reject) => {
-    if (typeof(searchTerm) == "string") {
-      let posts = await Post.reusableQuery([
-        {$match: {$text: {$search: searchTerm}}}
-      ], undefined, [{$sort: {score: {$meta: "textScore"}}}])
-      resolve(posts)
+    if (typeof searchTerm == "string") {
+      let posts = await Post.reusableQuery([{ $match: { $text: { $search: searchTerm } } }], undefined, [{ $sort: { score: { $meta: "textScore" } } }]);
+      resolve(posts);
     } else {
-      reject()
+      reject();
     }
-  })
-}
+  });
+};
 
 module.exports = Post;
