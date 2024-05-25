@@ -6,7 +6,17 @@
     <img
       class="avatar-small"
       src="<%= profileAvatar %>" />
-    <%= profileUsername %>
+    <%= profileUsername %> <% if (user) { if (isFollowing) { %>
+    <form
+      class="ml-2 d-inline"
+      action="/addFollow/<%= profileUsername %>"
+      method="POST">
+      <button class="btn btn-danger btn-sm">
+        Stop Following
+        <i class="fas fa-user-times"></i>
+      </button>
+    </form>
+    <% } else { %>
     <form
       class="ml-2 d-inline"
       action="/addFollow/<%= profileUsername %>"
@@ -15,8 +25,8 @@
         Follow
         <i class="fas fa-user-plus"></i>
       </button>
-      <!-- <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button> -->
     </form>
+    <%} }%>
   </h2>
 
   <div class="profile-nav nav nav-tabs pt-2 mb-4">

@@ -57,4 +57,16 @@ Follow.prototype.validate = async function () {
   }
 };
 
+Follow.isVisitorFollowing = async function (followedId, visitorId) {
+  let follow = await followCollection.findOne({
+    followedId: followedId,
+    authorId: new ObjectId(visitorId),
+  });
+  if (follow) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 module.exports = Follow;
