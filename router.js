@@ -23,6 +23,7 @@ router.post("/search", postController.search);
 
 // follow related routes
 router.post("/addFollow/:username", userController.mustBeLoggedIn, followController.addFollow);
+router.post("/removeFollow/:username", userController.mustBeLoggedIn, followController.removeFollow);
 
 router.get("/about", (req, res) => {
   res.send("This is an about page");
