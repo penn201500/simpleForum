@@ -141,6 +141,21 @@ async function profileFollowersScreen(req, res) {
   }
 }
 
+async function profileFollowingScreen(req, res) {
+  try {
+    let following = await Follow.getFollowingById(req.profileUser._id);
+    res.render("profile-following", {
+      following: following,
+      profileUsername: req.profileUser.username,
+      profileAvatar: req.profileUser.avatar,
+      isFollowing: req.isFollowing,
+      isVisitorsProfile: req.isVisitorsProfile,
+    });
+  } catch (error) {
+    res.render("404");
+  }
+}
+
 module.exports = {
   home,
   registration,
@@ -151,4 +166,5 @@ module.exports = {
   profilePostsScreen,
   sharedProfileData,
   profileFollowersScreen,
+  profileFollowingScreen,
 };
