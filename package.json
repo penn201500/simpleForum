@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon server.js --ignore frontend-js --ignore public/ & webpack --watch "
+    "watch": "nodemon server.js --ignore frontend-js --ignore public/ & webpack --watch ",
+    "postinstall": "patch-package"
   },
   "keywords": [],
   "author": "",
