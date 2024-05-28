@@ -25,6 +25,16 @@ async function sharedProfileData(req, res, next) {
   }
   req.isVisitorsProfile = isVisitorsProfile;
   req.isFollowing = isFollowing;
+  // retrieve post count and follower/following count
+  let postCountPromise = Post.countPostsByAuthor(req.profileUser._id);
+  let followerCountPromise = Follow.countFollowersById(req.profileUser._id);
+  let followingCountPromise = Follow.countFollowingById(req.profileUser._id);
+  let [postCount, followerCount, followingCount] = await Promise.all([postCountPromise, followerCountPromise, followingCountPromise]); // start all promises at the same time
+
+  req.postCount = postCount;
+  req.followerCount = followerCount;
+  req.followingCount = followingCount;
+
   next();
 }
 
@@ -120,6 +130,7 @@ function profilePostsScreen(req, res) {
         profileAvatar: req.profileUser.avatar,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
+        counts: { postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount },
       });
     })
     .catch(() => {
@@ -137,6 +148,7 @@ async function profileFollowersScreen(req, res) {
       profileAvatar: req.profileUser.avatar,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
+      counts: { postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount },
     });
   } catch (error) {
     res.render("404");
@@ -153,6 +165,7 @@ async function profileFollowingScreen(req, res) {
       profileAvatar: req.profileUser.avatar,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
+      counts: { postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount },
     });
   } catch (error) {
     res.render("404");
