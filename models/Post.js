@@ -4,10 +4,19 @@ const User = require("./User");
 const sanitizeHtml = require("sanitize-html");
 
 let postCollection;
+let followCollection;
 
 (async () => {
   try {
     postCollection = await getCollection("posts");
+  } catch (error) {
+    console.error("Failed to get the user collection: ", error);
+  }
+})();
+
+(async () => {
+  try {
+    followCollection = await getCollection("follows");
   } catch (error) {
     console.error("Failed to get the user collection: ", error);
   }
@@ -191,6 +200,16 @@ Post.countPostsByAuthor = function (id) {
       reject();
     }
   });
+};
+
+Post.getFeed = async function (id) {
+  // get all user ids that current user follows
+  let followedUserIds = await followCollection.find({ authorId: new ObjectId(id) }).toArray();
+  let followedUsers = followedUserIds.map(function (followedUser) {
+    return followedUser.followedId;
+  });
+  // get all posts from those users
+  return await Post.reusableQuery([{ $match: { author: { $in: followedUsers } } }, { $sort: { createdDate: -1 } }]);
 };
 
 module.exports = Post;

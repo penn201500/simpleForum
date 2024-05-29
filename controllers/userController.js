@@ -2,11 +2,12 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const Follow = require("../models/Follow");
 
-const home = (req, res) => {
+const home = async (req, res) => {
   if (req.session.user) {
+    // fetch feed of posts for current user
+    let posts = await Post.getFeed(req.session.user._id);
     res.render("home-dashboard", {
-      username: req.session.user.username,
-      avatar: req.session.user.avatar,
+      posts: posts,
     });
   } else {
     res.render("home-guest", {
