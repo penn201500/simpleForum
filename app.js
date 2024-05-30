@@ -60,9 +60,9 @@ io.use(function (socket, next) {
 io.on("connection", function (socket) {
   if (socket.request.session.user) {
     let user = socket.request.session.user
-    socket.emit('welcome', {username: user.username, avatar: user.avatar})
+    socket.emit("welcome", { username: user.username, avatar: user.avatar })
     socket.on("messageFromBrowser", function (data) {
-      socket.broadcast.emit("messageToBrowser", {message: data.message, username: user.username, avatar: user.avatar})
+      socket.broadcast.emit("messageToBrowser", { message: sanitizeHtml(data.message, { allowedTags: [], allowedAttributes: {} }), username: user.username, avatar: user.avatar })
     })
   }
 })
