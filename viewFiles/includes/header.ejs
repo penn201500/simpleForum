@@ -8,7 +8,7 @@
     <meta
       http-equiv="X-UA-Compatible"
       content="ie=edge" />
-    <title><%= typeof title === "undefined" ? "SimpleForum" : `${title} | SimpleForum` %></title>
+    <title><%= typeof title === "undefined" || title === "" ? "SimpleForum" : `${title} | SimpleForum` %></title>
     <link
       rel="stylesheet"
       href="/main.css" />
