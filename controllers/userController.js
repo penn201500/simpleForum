@@ -8,6 +8,7 @@ const home = async (req, res) => {
     let posts = await Post.getFeed(req.session.user._id);
     res.render("home-dashboard", {
       posts: posts,
+      title: posts.length ? `(${posts.length})` : "" // posts count
     });
   } else {
     res.render("home-guest", {
