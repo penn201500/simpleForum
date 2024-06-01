@@ -16,7 +16,7 @@ export default class RegistrationForm {
   // Methods
   insertValidationElements() {
     this.allInputs.forEach(element => {
-      element.insertAdjacentHTML("afterend", "<div class='alert alert-danger small liveValidateMessage></div>")
+      element.insertAdjacentHTML("afterend", "<div class='alert alert-danger small liveValidateMessage'></div>")
     })
   }
 
@@ -28,6 +28,23 @@ export default class RegistrationForm {
   }
 
   usernameHandler() {
-    alert("username handler")
+    this.usernameImmediately()
+    clearTimeout(this.username.timer)
+    this.username.timer = setTimeout(() => {
+      this.usernameAfterDelay()
+    }, 3000)
+  }
+
+  usernameImmediately() {
+    if (this.username.value != "" && !/^([a-z0-9]+)$/i.test(this.username.value)) {
+      this.showValidationError(this.username, "Username can only contain letters and numbers.")
+    }
+  }
+
+  usernameAfterDelay() {}
+
+  showValidationError(el, message) {
+    el.nextElementSibling.innerHTML = message
+    el.nextElementSibling.classList.add("liveValidateMessage--visible")
   }
 }
