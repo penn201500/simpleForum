@@ -167,6 +167,7 @@ User.findByUsername = function (username) {
           };
           resolve(userDocument);
         } else {
+          reject();
         }
       })
       .catch(() => {
