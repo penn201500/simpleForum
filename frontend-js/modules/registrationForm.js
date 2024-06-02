@@ -8,6 +8,8 @@ export default class RegistrationForm {
     this.username.previousValue = ""
     this.email = document.querySelector("#email-register")
     this.email.previousValue = ""
+    this.password = document.querySelector("#password-register")
+    this.password.previousValue = ""
     this.events()
   }
 
@@ -18,6 +20,9 @@ export default class RegistrationForm {
     })
     this.email.addEventListener("keyup", () => {
       this.isDifferent(this.email, this.emailHandler)
+    })
+    this.password.addEventListener("keyup", () => {
+      this.isDifferent(this.password, this.passwordHandler)
     })
   }
 
@@ -52,6 +57,15 @@ export default class RegistrationForm {
     }, 3000)
   }
 
+  passwordHandler() {
+    this.password.errors = false
+    this.passwordImmediately()
+    clearTimeout(this.password.timer)
+    this.password.timer = setTimeout(() => {
+      this.passwordAfterDelay()
+    }, 3000)
+  }
+
   emailAfterDelay() {
     if (!/^\S+@\S+$/.test(this.email.value)) {
       this.showValidationError(this.email, "You must provide a valid email address.")
@@ -77,13 +91,21 @@ export default class RegistrationForm {
       this.showValidationError(this.username, "Username can only contain letters and numbers.")
     }
     if (this.username.value.length > 30) {
-      this.showValidationError(this.username, "Username must be less than 30 characters.")
+      this.showValidationError(this.username, "Username can not exceed 30 characters.")
     }
     if (!this.username.errors) {
       this.hideValidationError(this.username)
     }
   }
 
+  passwordImmediately() {
+    if (this.password.value.length > 50) {
+      this.showValidationError(this.password, "Password can not exceed 50 characters.")
+    }
+    if (!this.password.errors) {
+      this.hideValidationError(this.password)
+    }
+  }
   hideValidationError(el) {
     el.nextElementSibling.classList.remove("liveValidateMessage--visible")
   }
@@ -107,6 +129,12 @@ export default class RegistrationForm {
         .catch(() => {
           console.log("Please try again later.")
         })
+    }
+  }
+
+  passwordAfterDelay() {
+    if (this.password.value.length < 12) {
+      this.showValidationError(this.password, "Password must be at least 12 characters.")
     }
   }
 
