@@ -3,6 +3,7 @@ export default class RegistrationForm {
     this.allInputs = document.querySelectorAll("#registration-form .form-control")
     this.insertValidationElements()
     this.username = document.querySelector("#username-register")
+    this.previousValue = ""
     this.events()
   }
 
