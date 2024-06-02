@@ -2,6 +2,7 @@ import axios from "axios"
 
 export default class RegistrationForm {
   constructor() {
+    this.form = document.querySelector("#registration-form")
     this.allInputs = document.querySelectorAll("#registration-form .form-control")
     this.insertValidationElements()
     this.username = document.querySelector("#username-register")
@@ -10,11 +11,17 @@ export default class RegistrationForm {
     this.email.previousValue = ""
     this.password = document.querySelector("#password-register")
     this.password.previousValue = ""
+    this.username.isUnique = false
+    this.email.isUnique = false
     this.events()
   }
 
   // Events
   events() {
+    this.form.addEventListener("submit", e => {
+      e.preventDefault()
+      this.formSubmitHandler()
+    })
     this.username.addEventListener("keyup", () => {
       this.isDifferent(this.username, this.usernameHandler)
     })
@@ -24,6 +31,15 @@ export default class RegistrationForm {
     this.password.addEventListener("keyup", () => {
       this.isDifferent(this.password, this.passwordHandler)
     })
+    this.username.addEventListener("blur", () => {
+      this.isDifferent(this.username, this.usernameHandler)
+    })
+    this.email.addEventListener("blur", () => {
+      this.isDifferent(this.email, this.emailHandler)
+    })
+    this.password.addEventListener("blur", () => {
+      this.isDifferent(this.password, this.passwordHandler)
+    })
   }
 
   // Methods
@@ -31,6 +47,18 @@ export default class RegistrationForm {
     this.allInputs.forEach(element => {
       element.insertAdjacentHTML("afterend", "<div class='alert alert-danger small liveValidateMessage'></div>")
     })
+  }
+
+  formSubmitHandler() {
+    this.usernameImmediately()
+    this.usernameAfterDelay()
+    this.emailAfterDelay()
+    this.passwordImmediately()
+    this.passwordAfterDelay()
+
+    if (this.username.isUnique && !this.email.errors && !this.password.errors) {
+      this.form.submit()
+    }
   }
 
   isDifferent(el, handler) {
@@ -72,17 +100,20 @@ export default class RegistrationForm {
       this.email.errors = true
     }
     if (!this.email.errors) {
-      axios.post("/doesEmailExist", { email: this.email.value }).then(response => {
-        if (response.data) {
-          this.email.isUnique = false
-          this.showValidationError(this.email, "That email is already being used.")
-        } else {
-          this.email.isUnique = true
-          this.hideValidationError(this.email)
-        }
-      }).catch(() => {
-        console.log(`Please try again later.`);
-      })
+      axios
+        .post("/doesEmailExist", { email: this.email.value })
+        .then(response => {
+          if (response.data) {
+            this.email.isUnique = false
+            this.showValidationError(this.email, "That email is already being used.")
+          } else {
+            this.email.isUnique = true
+            this.hideValidationError(this.email)
+          }
+        })
+        .catch(() => {
+          console.log(`Please try again later.`)
+        })
     }
   }
 
