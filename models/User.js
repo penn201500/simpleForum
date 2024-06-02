@@ -176,4 +176,30 @@ User.findByUsername = function (username) {
   });
 };
 
+User.findUserByEmail = function (email) {
+  return new Promise(async (resolve, reject) => {
+    if (typeof email != "string") {
+      reject();
+      return;
+    }
+    userCollection
+      .findOne({ email: email })
+      .then((userDocument) => {
+        if (userDocument) {
+          userDocument = new User(userDocument, true);
+          userDocument = {
+            _id: userDocument.data._id,
+            username: userDocument.data.username,
+            email: userDocument.data.email,
+          };
+          resolve(userDocument);
+        } else {
+          reject();
+        }
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+};
 module.exports = User;

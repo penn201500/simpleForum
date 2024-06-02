@@ -188,6 +188,20 @@ function doesUsernameExist(req, res) {
     })
 }
 
+function doesEmailExist(req, res) {
+  User.findUserByEmail(req.body.email)
+    .then(user => {
+      if (user) {
+        res.json(true)
+      } else {
+        res.json(false)
+      }
+    })
+    .catch(() => {
+      res.json(false)
+    })
+}
+
 module.exports = {
   home,
   registration,
@@ -200,4 +214,5 @@ module.exports = {
   profileFollowersScreen,
   profileFollowingScreen,
   doesUsernameExist,
+  doesEmailExist,
 }

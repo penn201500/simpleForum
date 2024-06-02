@@ -6,6 +6,8 @@ export default class RegistrationForm {
     this.insertValidationElements()
     this.username = document.querySelector("#username-register")
     this.username.previousValue = ""
+    this.email = document.querySelector("#email-register")
+    this.email.previousValue = ""
     this.events()
   }
 
@@ -13,6 +15,9 @@ export default class RegistrationForm {
   events() {
     this.username.addEventListener("keyup", () => {
       this.isDifferent(this.username, this.usernameHandler)
+    })
+    this.email.addEventListener("keyup", () => {
+      this.isDifferent(this.email, this.emailHandler)
     })
   }
 
@@ -37,6 +42,34 @@ export default class RegistrationForm {
     this.username.timer = setTimeout(() => {
       this.usernameAfterDelay()
     }, 3000)
+  }
+
+  emailHandler() {
+    this.email.errors = false
+    clearTimeout(this.email.timer)
+    this.email.timer = setTimeout(() => {
+      this.emailAfterDelay()
+    }, 3000)
+  }
+
+  emailAfterDelay() {
+    if (!/^\S+@\S+$/.test(this.email.value)) {
+      this.showValidationError(this.email, "You must provide a valid email address.")
+      this.email.errors = true
+    }
+    if (!this.email.errors) {
+      axios.post("/doesEmailExist", { email: this.email.value }).then(response => {
+        if (response.data) {
+          this.email.isUnique = false
+          this.showValidationError(this.email, "That email is already being used.")
+        } else {
+          this.email.isUnique = true
+          this.hideValidationError(this.email)
+        }
+      }).catch(() => {
+        console.log(`Please try again later.`);
+      })
+    }
   }
 
   usernameImmediately() {
