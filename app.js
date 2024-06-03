@@ -5,6 +5,7 @@ const router = require("./router")
 const { client, dbName } = require("./db")
 const flash = require("connect-flash")
 const markdown = require("marked")
+const csrf = require("csurf")
 const app = express()
 const sanitizeHtml = require("sanitize-html")
 
@@ -44,7 +45,26 @@ app.use(express.static("public"))
 app.set("views", "viewFiles")
 app.set("view engine", "ejs")
 
+app.use(csrf()) // added before router, any requests that modify state will need to have a valid and matching csrf token
+
+app.use(function (req, res, next) {  // to use csrfToken within template
+  res.locals.csrfToken = req.csrfToken()
+  next()
+})
+
 app.use("/", router)
+
+app.use(function (err, req, res, next) {  // CSRF error handler, redirect to homepage
+  if (err) {
+    if (err.code == "EBADCSRFTOKEN") {
+      req.flash("errors", "Cross-site request forgery detected.")
+      req.session.save(() => res.redirect("/"))
+    } else {
+      res.render("404")
+    }
+  }
+})
+
 app.use("/login", router)
 app.use("/registration", router)
 app.use("/about", router)
