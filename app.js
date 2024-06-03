@@ -13,7 +13,7 @@ let sessionOptions = session({
   store: mongoStore.create({ client: client, dbName: dbName }), // store the session in the database
   resave: false, // forces the session to be saved back to the session store
   saveUninitialized: false, // forces a session that is "uninitialized" to be saved to the store
-  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true }, // 24 hours
+  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, sameSite: true }, // 24 hours
 })
 
 // middleware
