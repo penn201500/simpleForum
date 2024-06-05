@@ -79,6 +79,22 @@ function login(req, res) {
     })
 }
 
+function apiLogin(req, res) {
+  // http requests are stateless, we use sessions to store user data
+  // session is a way to store data on the server temporarily
+  // our server will remember the user's data until the session expires
+  // so we can use this session data from any of our URLs or routes
+  let user = new User(req.body)
+  user
+    .login()
+    .then(result => {
+      res.json("success")
+    })
+    .catch(e => {
+      res.json("error")
+    })
+}
+
 function logout(req, res) {
   req.session.destroy(() => {
     res.redirect("/") // use callback function to wait for the session to be destroyed
@@ -215,4 +231,5 @@ module.exports = {
   profileFollowingScreen,
   doesUsernameExist,
   doesEmailExist,
+  apiLogin
 }

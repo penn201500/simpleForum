@@ -9,6 +9,11 @@ const csrf = require("csurf")
 const app = express()
 const sanitizeHtml = require("sanitize-html")
 
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+
+app.use("/api", require("./router-api"))
+
 let sessionOptions = session({
   secret: "JavaScript is so cool", // a secret key used to sign the session ID cookie
   store: mongoStore.create({ client: client, dbName: dbName }), // store the session in the database
@@ -18,8 +23,6 @@ let sessionOptions = session({
 })
 
 // middleware
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
 app.use(sessionOptions)
 app.use(flash())
 app.use((req, res, next) => {
@@ -47,14 +50,16 @@ app.set("view engine", "ejs")
 
 app.use(csrf()) // added before router, any requests that modify state will need to have a valid and matching csrf token
 
-app.use(function (req, res, next) {  // to use csrfToken within template
+app.use(function (req, res, next) {
+  // to use csrfToken within template
   res.locals.csrfToken = req.csrfToken()
   next()
 })
 
 app.use("/", router)
 
-app.use(function (err, req, res, next) {  // CSRF error handler, redirect to homepage
+app.use(function (err, req, res, next) {
+  // CSRF error handler, redirect to homepage
   if (err) {
     if (err.code == "EBADCSRFTOKEN") {
       req.flash("errors", "Cross-site request forgery detected.")
