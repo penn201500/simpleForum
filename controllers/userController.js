@@ -61,6 +61,16 @@ function apiMustBeLoggedIn(req, res, next) {
   }
 }
 
+async function apiGetPostsByUsername(req, res) {
+  try {
+    let authorDoc = await User.findByUsername(req.params.username)
+    let posts = await Post.findByAuthorId(authorDoc._id)
+    res.json(posts)
+  } catch {
+    res.json({ error: "User not found" })
+  }
+}
+
 function login(req, res) {
   // http requests are stateless, we use sessions to store user data
   // session is a way to store data on the server temporarily
@@ -243,4 +253,5 @@ module.exports = {
   doesEmailExist,
   apiLogin,
   apiMustBeLoggedIn,
+  apiGetPostsByUsername,
 }
