@@ -34,6 +34,14 @@ exports.apiCreate = function (req, res) {
     })
 }
 
+exports.apiDelete = function (req, res) {
+  Post.delete(req.params.id, req.apiUser._id).then(() => {
+    res.json({ status: "success" })
+  }).catch(() => {
+    res.json({ status: "error", data: { error: "You do not have permission to delete this post." } })
+  })
+}
+
 exports.viewSingle = async function (req, res) {
   try {
     let post = await Post.findSingleById(req.params.id, req.visitorId)
