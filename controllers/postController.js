@@ -1,52 +1,64 @@
-const Post = require("../models/Post");
+const Post = require("../models/Post")
 
 exports.viewCreateScreen = function (req, res) {
-  res.render("create-post");
-};
+  res.render("create-post")
+}
 
 exports.createPost = function (req, res) {
-  let post = new Post(req.body, req.session.user._id);
+  let post = new Post(req.body, req.session.user._id)
   post
     .create()
     .then(function (newId) {
-      req.flash("success", "Post created successfully");
+      req.flash("success", "Post created successfully")
       req.session.save(() => {
-        res.redirect(`/post/${newId}`);
-      });
+        res.redirect(`/post/${newId}`)
+      })
     })
     .catch(function (errors) {
       errors.forEach(error => {
-        req.flash("errors", error);
-        res.session.save(() => res.redirect("/create-post"));
-      });
-    });
-};
+        req.flash("errors", error)
+        res.session.save(() => res.redirect("/create-post"))
+      })
+    })
+}
+
+exports.apiCreate = function (req, res) {
+  let post = new Post(req.body, req.apiUser._id)
+  post
+    .create()
+    .then(function (newId) {
+      res.json({ status: "success", data: { post: newId } })
+    })
+    .catch(function (errors) {
+      res.json({ status: "error", errors: errors })
+    })
+}
 
 exports.viewSingle = async function (req, res) {
   try {
-    let post = await Post.findSingleById(req.params.id, req.visitorId);
-    res.render("single-post-screen", { post: post, title: post.title });
+    let post = await Post.findSingleById(req.params.id, req.visitorId)
+    res.render("single-post-screen", { post: post, title: post.title })
   } catch (error) {
-    res.render("404");
+    res.render("404")
   }
-};
+}
 
 exports.viewEditScreen = async function (req, res) {
   try {
-    let post = await Post.findSingleById(req.params.id, req.visitorId);
+    let post = await Post.findSingleById(req.params.id, req.visitorId)
     if (post.isVisitorOwner) {
-      res.render("edit-post", { post: post });
+      res.render("edit-post", { post: post })
     } else {
-      req.flash("errors", "You do not have permission to perform this action.");
-      req.session.save(() => res.redirect("/"));
+      req.flash("errors", "You do not have permission to perform this action.")
+      req.session.save(() => res.redirect("/"))
     }
   } catch {
-    res.render("404");
+    res.render("404")
   }
-};
+}
 
 exports.edit = function (req, res) {
-  let post = new Post(req.body, req.visitorId, req.params.id);
+  let post = new Post(req.body, req.visitorId, req.params.id)
   post
     .update()
     .then(status => {
@@ -54,46 +66,46 @@ exports.edit = function (req, res) {
       // or user did have permission, but there were validation errors
       if (status === "success") {
         // post was updated in db
-        req.flash("success", "Post successfully updated.");
+        req.flash("success", "Post successfully updated.")
         req.session.save(function () {
-          res.redirect(`/post/${req.params.id}/edit`);
-        });
+          res.redirect(`/post/${req.params.id}/edit`)
+        })
       } else {
         post.errors.forEach(function (error) {
-          req.flash("errors", error);
-        });
+          req.flash("errors", error)
+        })
         req.session.save(function () {
-          res.redirect(`/post/${req.params.id}/edit`);
-        });
+          res.redirect(`/post/${req.params.id}/edit`)
+        })
       }
     })
     .catch(() => {
       // the post did not validate or update
       post.errors.forEach(function (error) {
-        req.flash("errors", error);
-      });
-      req.session.save(() => res.redirect(`/post/${req.params.id}/edit`));
-    });
-};
+        req.flash("errors", error)
+      })
+      req.session.save(() => res.redirect(`/post/${req.params.id}/edit`))
+    })
+}
 
 exports.delete = function (req, res) {
   Post.delete(req.params.id, req.visitorId)
     .then(() => {
-      req.flash("success", "Post successfully deleted.");
-      req.session.save(() => res.redirect(`/profile/${req.session.user.username}`));
+      req.flash("success", "Post successfully deleted.")
+      req.session.save(() => res.redirect(`/profile/${req.session.user.username}`))
     })
     .catch(() => {
-      req.flash("errors", "You do not have permission to perform this action.");
-      req.session.save(() => res.redirect("/"));
-    });
-};
+      req.flash("errors", "You do not have permission to perform this action.")
+      req.session.save(() => res.redirect("/"))
+    })
+}
 
 exports.search = function (req, res) {
   Post.search(req.body.searchTerm)
     .then(posts => {
-      res.json(posts);
+      res.json(posts)
     })
     .catch(() => {
-      res.json([]);
-    });
-};
+      res.json([])
+    })
+}

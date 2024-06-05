@@ -1,6 +1,7 @@
 const User = require("../models/User")
 const Post = require("../models/Post")
 const Follow = require("../models/Follow")
+const jwt = require("jsonwebtoken")
 
 const home = async (req, res) => {
   if (req.session.user) {
@@ -51,6 +52,15 @@ function mustBeLoggedIn(req, res, next) {
   }
 }
 
+function apiMustBeLoggedIn(req, res, next) {
+  try {
+    req.apiUser = jwt.verify(req.body.token, process.env.JWT_SECRET)
+    next()
+  } catch (error) {
+    res.status(401).json({ error: "Unauthorized" })
+  }
+}
+
 function login(req, res) {
   // http requests are stateless, we use sessions to store user data
   // session is a way to store data on the server temporarily
@@ -88,7 +98,7 @@ function apiLogin(req, res) {
   user
     .login()
     .then(result => {
-      res.json("success")
+      res.json(jwt.sign({ _id: user.data._id }, process.env.JWT_SECRET, { expiresIn: "1d" }))
     })
     .catch(e => {
       res.json("error")
@@ -231,5 +241,6 @@ module.exports = {
   profileFollowingScreen,
   doesUsernameExist,
   doesEmailExist,
-  apiLogin
+  apiLogin,
+  apiMustBeLoggedIn,
 }
