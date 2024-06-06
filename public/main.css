@@ -118,7 +118,7 @@ body, .tooltip
 }
 
 textarea.tall-textarea {
-  height: 160px;
+  height: 320px !important;
 }
 
 @media (min-width: 768px) {
