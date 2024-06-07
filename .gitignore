@@ -134,4 +134,4 @@ dist
 .idea
 .*.json
 .vscode
-screenshots/
+#screenshots/
