@@ -3,6 +3,8 @@
 
 SimpleForum is a web application where users can interact by registering, logging in, and logging out. The application allows users to create, edit, and delete posts, search for posts, and follow or un-follow other users. Additionally, users can chat with others who are online.
 
+This README is also available in [Chinese](README_CN.md).
+
 This is a [demo](https://simpleforum-2.onrender.com/)
 
 ## Features
@@ -88,5 +90,3 @@ Contributions are welcome! If you have suggestions or improvements, please fork 
 ## License
 
 This script is open-source and free to use under the MIT license.
-
-This project is licensed under the ISC License. See the LICENSE file for more details.
