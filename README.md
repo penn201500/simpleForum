@@ -3,6 +3,8 @@
 
 SimpleForum is a web application where users can interact by registering, logging in, and logging out. The application allows users to create, edit, and delete posts, search for posts, and follow or un-follow other users. Additionally, users can chat with others who are online.
 
+This is a [demo](https://simpleforum-2.onrender.com/)
+
 ## Features
 
 - User registration and authentication.
@@ -15,20 +17,19 @@ SimpleForum is a web application where users can interact by registering, loggin
 
 ### Login
 
-[login](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-login.gif)
+![login](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-login.gif)
 
 ### Posts
 
-[posts](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-posts.gif)
+![posts](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-posts.gif)
 
 ### Search and Follow
 
-[search and follow](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-searchAndFollow.gif)
+![search and follow](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-searchAndFollow.gif)
 
 ### Chat
 
-[chat](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-chat.gif)
-
+![chat](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-chat.gif)
 
 ## Technology Stack
 
