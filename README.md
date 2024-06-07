@@ -15,13 +15,19 @@ SimpleForum is a web application where users can interact by registering, loggin
 
 ### Login
 
+[login](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-login.gif)
+
 ### Posts
+
+[posts](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-posts.gif)
 
 ### Search and Follow
 
+[search and follow](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-searchAndFollow.gif)
+
 ### Chat
 
-[chat](./simpleForum-chat.gif)
+[chat](https://github.com/penn201500/simpleForum/blob/main/screenshots/simpleForum-chat.gif)
 
 
 ## Technology Stack
