@@ -4,7 +4,7 @@ SimpleForum 是一个论坛应用程序，用户可以通过注册、登录、�
 
 这是英文版本的 README [EN](README.md).
 
-这是一个[演示](https://simpleforum-2.onrender.com/)
+这是一个[演示环境](https://simpleforum-2.onrender.com/)
 
 ## 功能
 
@@ -39,7 +39,7 @@ SimpleForum 是一个论坛应用程序，用户可以通过注册、登录、�
 - EJS 模板
 - Webpack 和 Babel 用于构建和转译
 - MongoDB 数据库
-- Socket.IO 实现实时通信
+- Socket.io 实现实时通信
 
 ## 预安装
 
@@ -85,7 +85,7 @@ npm run watch
 
 ## 贡献
 
-欢迎贡献！如果您有建议或改进，请 fork 此仓库并提交一个 pull request。
+欢迎贡献！如果您有建议或改进，请 fork 此仓库提交 pull request。
 
 ## 许可证
 

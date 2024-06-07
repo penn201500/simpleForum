@@ -40,7 +40,7 @@ This is a [demo](https://simpleforum-2.onrender.com/)
 - EJS for templating
 - Webpack and Babel for building and transpiling
 - MongoDB for database
-- Socket.IO for real-time communication
+- Socket.io for real-time communication
 
 ## Prerequisites
 
