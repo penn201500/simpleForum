@@ -8,9 +8,19 @@ const markdown = require("marked")
 const csrf = require("csurf")
 const app = express()
 const sanitizeHtml = require("sanitize-html")
+const rateLimit = require("express-rate-limit")
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+
+app.use(
+  rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minutes
+    max: 20,
+    message: "Too many requests from this IP, please try again after 1 minute",
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  })
+)
 
 app.use("/api", require("./router-api"))
 
